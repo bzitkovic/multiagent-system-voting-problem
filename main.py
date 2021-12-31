@@ -111,9 +111,5 @@ if __name__ == "__main__":
     try:
         while True:
             time.sleep(1)
-            for agent in AGENTS:
-                agent.stop()
-            CHAIRMAN[0].stop()
-            VOTING[0].stop()
     except KeyboardInterrupt:
         print("\nStopping program...")

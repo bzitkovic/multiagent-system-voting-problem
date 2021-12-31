@@ -1,6 +1,3 @@
-from itertools import islice
-
-
 class PluralityVoting:
     def give_votes(self, priorities):
         choices = []
@@ -18,7 +15,6 @@ class PluralityVoting:
         for agent in agents:
             votes[agent.priorities[0]] += 1
             agent.vote_for = agent.priorities[0]
-
         votes = sorted(votes.items(), key=lambda x: (x[1], x[0]), reverse=True)
 
         print(f"\nWinner proposal is: {votes[0][0]} with {votes[0][1]} votes\n")
