@@ -6,11 +6,12 @@ from behaviors import VotingProcess
 
 
 class ChairmanAgent(Agent):
-    ime = "Bruno"
+    name = "Bruno"
     proposal = ""
+    vote_for = ""
 
-    def set_agent_details(self, ime, proposal):
-        self.ime = ime
+    def set_agent_details(self, name, proposal):
+        self.name = name
         self.proposal = proposal
 
     class InformBehav(OneShotBehaviour):
@@ -25,29 +26,29 @@ class ChairmanAgent(Agent):
             await self.send(msg)
 
     async def setup(self):
-        print(f"Hello! I'm the chairman {self.ime}")
+        print(f"\nHello! I'm the chairman {self.name}")
         b = self.InformBehav()
         self.add_behaviour(b)
 
 
 class MemberAgent(Agent):
-    ime = "unknown"
+    name = "unknown"
     priorities = []
 
-    def set_agent_details(self, ime, priorities):
-        self.ime = ime
+    def set_agent_details(self, name, priorities):
+        self.name = name
         self.priorities = priorities
 
     class RecvBehav(OneShotBehaviour):
         async def run(self):
             msg = await self.receive(timeout=50)
             if msg:
-                print("Message received with content: {}".format(msg.body))
+                print("\nMessage received with content: {}".format(msg.body))
             else:
                 print("Did not received any message after 10 seconds")
 
     async def setup(self):
-        print(f"Hello! I'm member {self.ime}")
+        print(f"Hello! I'm member {self.name}")
         b = self.RecvBehav()
         template = Template()
         template.set_metadata("performative", "inform")

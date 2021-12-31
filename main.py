@@ -1,13 +1,10 @@
-from logging import Formatter
-from spade.agent import Agent
 from spade.behaviour import State
 from spade.message import Message
 import threading
 import random
 import time
-from aioxmpp import PresenceShow, PresenceState
 import json
-from vote_methods import PluralityVoting
+from vote_methods import PluralityVoting, Runoff
 from agents import ChairmanAgent, MemberAgent, Voting
 from global_settings import *
 import sys
@@ -15,8 +12,9 @@ import sys
 
 class StateDiscussion(State):
     async def run(self):
-        print("\nWe will now discuss about the proposal.")
+        print("\nWe will now discuss about the proposal.\n")
         self.set_next_state(STATE_TWO)
+        print_agent_preferences(AGENTS)
 
         time.sleep(PAUSE)
 
@@ -39,12 +37,7 @@ class StateVotingEnd(State):
         print("\nVoting is over.")
         msg = await self.receive(timeout=5)
         votes = json.loads(msg.body.replace("'", '"'))
-        votes = voting_method.calculate_votes(votes, AGENTS)
-        winner_vote = votes[0][0]
-
-        for agent in AGENTS:
-            if agent.priorities[0] != winner_vote:
-                print(f"I ({agent.ime}) support {agent.priorities[0]}")
+        voting_method.calculate_votes(votes, AGENTS)
 
         time.sleep(PAUSE)
 
@@ -68,6 +61,7 @@ def create_member_agent(account_info, i):
 
 def create_voting_agent(account_info):
     voting = Voting(account_info[0], account_info[1])
+    VOTING.append(voting)
     future = voting.start()
     voting.fsm.add_state(name=STATE_ONE, state=StateDiscussion(), initial=True)
     voting.fsm.add_state(name=STATE_TWO, state=StateVoting())
@@ -78,11 +72,25 @@ def create_voting_agent(account_info):
     future.result()
 
 
+def print_agent_preferences(agents):
+    for agent in agents:
+        print(f"My ({agent.name}) priorities are: {agent.priorities}")
+
+
 if __name__ == "__main__":
-    method = sys.argv[1]
+
+    try:
+        method = sys.argv[1]
+    except:
+        sys.exit()
 
     if method == "plurality":
         voting_method = PluralityVoting()
+    elif method == "runoff":
+        voting_method = Runoff()
+    else:
+        print("Method doesn't exist! Exiting . . .")
+        sys.exit()
 
     for i in range(1, 4):
         account_info = ("agent@rec.foi.hr", "tajna")
@@ -100,10 +108,12 @@ if __name__ == "__main__":
         target=create_voting_agent(account_info), args=(account_info)
     ).start()
 
-    while True:
-        try:
+    try:
+        while True:
+            time.sleep(1)
             for agent in AGENTS:
                 agent.stop()
             CHAIRMAN[0].stop()
-        except KeyboardInterrupt:
-            break
+            VOTING[0].stop()
+    except KeyboardInterrupt:
+        print("\nStopping program...")
