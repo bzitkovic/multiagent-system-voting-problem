@@ -81,6 +81,7 @@ if __name__ == "__main__":
 
     try:
         method = sys.argv[1]
+        agent_number = sys.argv[2]
     except:
         sys.exit()
 
@@ -92,7 +93,7 @@ if __name__ == "__main__":
         print("Method doesn't exist! Exiting . . .")
         sys.exit()
 
-    for i in range(1, 4):
+    for i in range(1, int(agent_number) + 1):
         account_info = ("agent@rec.foi.hr", "tajna")
         thread1 = threading.Thread(
             target=create_member_agent(account_info, i), args=(account_info, i)
