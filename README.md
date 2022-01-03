@@ -1,7 +1,7 @@
 # Multi-agent system that deals with voting problem
 
 ## About The Project
-The project was developed to address the problem of voting in multi-agent systems.
+The project was developed to address the problem of voting in a multi-agent systems.
 The system was developed to work with the Python SPADE (Smart Python multi-Agent Development Environment) library and its main purpose is to vote in a meeting.
 
 ### Built With
