@@ -18,6 +18,7 @@ You will ned spade library to run the Python program.
 ### Installation
 
 The following are the installation steps:
+
 Clone the repo
    ```sh
    git clone https://github.com/bzitkovic/multiagent-system-voting-problem.git
