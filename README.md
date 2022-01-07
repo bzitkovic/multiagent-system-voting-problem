@@ -10,7 +10,7 @@ The system was developed to work with the Python SPADE (Smart Python multi-Agent
 
 ### Prerequisites
 
-You will ned spade library to run the Python program.
+You will need spade library to run the Python program.
   ```sh
   pip install spade
   ```
